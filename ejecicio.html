@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GamerCol</title>
+
+    <!-- Bootstrap y otras dependencias -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style/style.css" />
+    <link rel="icon" href="IMG/logo.png" />
+
+    <!-- Estilos personalizados -->
+    <style>
+        /* Estilos globales */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            padding-top: 80px; /* Para que no se monte la barra de navegación en los productos */
+        }
+
+        /* Barra de navegación */
+        .navbar-text {
+            font-size: 50px;
+            color: #00ff00 !important;
+            margin-left: 10px;
+            font-weight: bold;
+        }
+
+        .navbar-nav .nav-link {
+            font-size: 20px;
+            padding-left: 30px;
+            padding-right: 30px;
+            color: white !important;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #00ff00 !important;
+        }
+
+        .navbar-brand img {
+            width: 80px;
+            margin-right: 5px; /* Espacio extra para separar del texto "GamerCol" */
+        }
+
+        .navbar-brand {
+            margin-left: -30px;
+        }
+
+        .navbar {
+            background-color: #333333 !important;
+            padding: 0.5rem 1rem;
+        }
+
+        .button,
+        .buy {
+            background-color: #00ff00;
+            border: 2px solid #00ff00;
+            color: #000;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .button:hover,
+        .buy:hover {
+            background-color: white;
+            color: #000;
+            border-color: #000;
+        }
+
+        .carro {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Drawer (carrito) */
+        .drawer {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100%;
+            background-color: #fefefe;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+            transition: right 0.3s ease;
+            z-index: 1050;
+        }
+
+        .drawer.open {
+            right: 0;
+        }
+
+        .drawer-header {
+            padding: 20px;
+            background-color: #2c2c2c;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .drawer-content {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .buy-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        /* Estilos de búsqueda */
+        .search-bar {
+            width: 300px;
+            margin-right: 20px;
+        }
+
+        /* Ajustar espaciado de los elementos a la derecha */
+        .navbar-nav .nav-item {
+            margin-right: 20px;
+        }
+
+        /* Estilos de productos */
+        main {
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .product {
+            background-color: #2c2c2c;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .product:hover {
+            transform: scale(1.05);
+        }
+
+        .product img {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+
+        .product h3 {
+            margin: 1rem 0;
+            color: #00ff00;
+        }
+
+        .product p {
+            margin-bottom: 1rem;
+        }
+
+        .product button {
+            background-color: #00ff00;
+            color: #1a1a1a;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .product button:hover {
+            background-color: #00cc00;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #a88383;
+            color: white;
+            padding: 1.5rem 0;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        footer .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        footer .social-icons a {
+            color: white;
+            font-size: 20px;
+            text-decoration: none;
+        }
+
+        footer p {
+            margin: 10px 0;
+        }
+
+        /* Estilos para mensaje emergente */
+        .alerta {
+            position: fixed;
+            top: 50px;
+            right: 20px;
+            background-color: #00ff00;
+            padding: 10px 20px;
+            color: #000;
+            border-radius: 5px;
+            z-index: 9999;
+        }
+
+        .btn-primary {
+            background-color: #00ff00;
+            border-color: aliceblue;
+            color: #1a1a1a;
+            border-radius: 5px;
+        }
+    </style>
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+            <img src="IMG/logo-removebg-preview.png" alt="logo" class="img-fluid" />
+            <span class="navbar-text">GamerCol</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2 search-bar" type="search" placeholder="Buscar productos..." aria-label="Search">
+            </form>
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="productosMenu" data-toggle="dropdown">Productos</a>
+                    <div class="dropdown-menu bg-dark" aria-labelledby="productosMenu">
+                        <a class="dropdown-item text-white" href="#">Torres</a>
+                        <a class="dropdown-item text-white" href="#">Monitores</a>
+                        <a class="dropdown-item text-white" href="#">Procesadores</a>
+                        <a class="dropdown-item text-white" href="#">Mouse</a>
+                        <a class="dropdown-item text-white" href="#">Teclados</a>
+                    </div>
+                </li>
+                <li class="nav-item"><a class="nav-link" href="#">Contacto</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Acerca de</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Registrarse</a></li>
+                <li class="nav-item">
+                    <button class="button nav-link" onclick="openDrawer()">
+                        <img class="carro" src="./image/carrito de compra.png" alt="Carrito">
+                        <strong>Carrito</strong>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+    <main>
+        <div class="product">
+            <img src
+            ="c:\Users\Juan Pablo\Pictures\D_NQ_NP_653200-MLU74529962371_022024-O.webp" alt="Teclado Gamer">
+            <h3>Teclado Gamer RGB</h3>
+            <p>Teclado mecánico con retroiluminación RGB personalizable</p>
+            <button>Comprar</button>
+        </div>
+        <div class="product">
+            <img src
+            ="c:\Users\Juan Pablo\Pictures\D_NQ_NP_637791-MLU71846648318_092023-O.webp" alt="Mouse Gamer">
+            <h3>Mouse Gamer Pro</h3>
+            <p>Mouse ergonómico con sensor óptico de alta precisión</p>
+            <button>Comprar</button>
+        </div>
+        <div class="product">
+            <img src
+            =" c:\Users\Juan Pablo\Pictures\audifonos-diadema-gamer-kotion-each-g2000-microfono-usb-led.webp" alt="Auriculares Gamer">
+            <h3>Auriculares Gamer 7.1</h3>
+            <p>Auriculares con sonido envolvente 7.1 y micrófono retráctil</p>
+            <button>Comprar</button>
+        </div>
+        <div class="product">
+            <img src
+            ="c:\Users\Juan Pablo\Pictures\D_NQ_NP_793540-MLA47602410780_092021-O.webp " alt="Monitor Gaming">
+            <h3>Monitor Gaming 144Hz</h3>
+            <p>Monitor de 27" con tasa de refresco de 144Hz y tiempo de respuesta de 1ms</p>
+            <button>Comprar</button>
+        </div>
+    </main>
+
+    <!-- Drawer (Carrito de compras) -->
+    <div class="drawer" id="myDrawer">
+        <div class="drawer-header">
+            <h4>Carrito</h4>
+            <button class="button" onclick="closeDrawer()">Cerrar</button>
+        </div>
+        <div class="drawer-content">
+            <p>Tu carrito está vacío.</p>
+            <div class="buy-container">
+                <button class="buy" onclick="redirectToHome()">Seguir Comprando</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 mb-3">
+                    <strong>Sobre Nosotros</strong>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 mb-3">
+                    <strong>Suscríbete a nuestro contenido semanal</strong><br>
+                    <button type="button" class="btn btn-primary mt-2" onclick="mostrarMensaje()"><strong>Suscribirse</strong></button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 text-left mb-3 contact">
+                    <strong>Contacto</strong><br>
+                    <span>
+                        <a href="mailto:gamecol@gmail.com">gamercol@gmail.com</a> | 3145622096
+                    </span>
+                </div>
+                <div class="col-md-6 mb-3 social">
+                    <strong>Síguenos</strong><br>
+                    <div class="social-icons">
+                        <img src="c:\Users\Juan Pablo\Pictures\diseno-logotipo-redes-sociales_23-2151299463.avif " class="img" alt="Facebook">
+                        <img src
+                        ="IMG/instagram.png" class="img-fluid" alt="Instagram">
+                        <img src
+                        ="IMG/discord.png" class="img-fluid" alt="Discord">
+                        <img src
+                        ="IMG/whatsapp.png" class="img-fluid" alt="Whatsapp">
+                        <img src
+                        ="IMG/twitch.png" class="img-fluid" alt="Twitch">
+                    </div>
+                </div>
+            </div>
+            <div class="Copyright">
+                    <p>Copyright © 2024 Tienda GamerCol - Todos los derechos reservados | Colombia</p>
+                </div>
+            </div>
+    </footer>        
+    <script>
+        function mostrarMensaje(){
+            alert('¡Gracias por suscribirte!');
+        }
+
+        
+        function openDrawer() {
+            document.getElementById("myDrawer").classList.add("open");
+        }
+
+        function closeDrawer() {
+            document.getElementById("myDrawer").classList.remove("open");
+        }
+
+        function redirectToHome() {
+            window.location.href = "index.html"; 
+        }
+
+    </script>    
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
